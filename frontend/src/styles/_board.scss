@@ -1,0 +1,11 @@
+.board {
+    width: 300px;
+    height: 300px;
+    display: grid;
+    margin: 0 auto;
+    grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+}
+
+.board__start {
+    margin-top: 1rem;
+}

@@ -1,9 +1,13 @@
 import React from "react";
 
+import "./styles/styles.scss";
+
+import Container from "./components/container";
+
 const App = () => {
     return (
         <div>
-            <h1>Hello world</h1>
+            <Container />
         </div>
     );
 };
