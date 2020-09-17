@@ -3,23 +3,24 @@ import axios from "axios";
 
 import Square from "./square";
 import { API_KEY } from "../../utils/api";
+import GameLog from "../gameLog";
 
 const Board = () => {
     const [squares, setSquares] = useState(Array(9).fill(null));
     const [nextIsX, setNextIsX] = useState(true);
+    const [winner, setWinner] = useState(null);
 
     useEffect(() => {
         const fetchData = () => {
             axios
-                .get(`${API_KEY}/log`)
+                .get(`${API_KEY}`)
                 .then((res) => {
+                    console.log(res.data);
                     setSquares(res.data);
                 })
                 .catch((err) => console.log(err));
         };
         fetchData();
-
-        console.log("useEffect");
     }, []);
 
     const handleSquareClick = async (index) => {
@@ -29,10 +30,19 @@ const Board = () => {
 
         board[index] = nextIsX ? "X" : "O";
 
-        axios.post(API_KEY, board);
+        axios
+            .post(API_KEY, board)
+            .then((res) => {
+                setWinner(res.data.winner);
+            })
+            .catch((err) => console.log(err));
 
         setNextIsX(!nextIsX);
         setSquares(board);
+    };
+
+    const renderTurn = () => {
+        if (!winner) return nextIsX ? <p>X turn</p> : <p>O turn</p>;
     };
 
     return (
@@ -49,7 +59,9 @@ const Board = () => {
                     );
                 })}
             </div>
-            {nextIsX ? <p>X turn</p> : <p>O turn</p>}
+            {renderTurn()}
+            {winner && <h3>Winner is {winner}</h3>}
+            <GameLog squares={squares} />
         </React.Fragment>
     );
 };

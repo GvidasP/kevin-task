@@ -12,20 +12,64 @@ app.use(
 
 app.use(express.json());
 
-app.get("/api", (req, res) => {
-    res.status(200).send("Hello world");
-});
+const checkForWinner = (req, res, next) => {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (
+            req.body[a] &&
+            req.body[a] === req.body[b] &&
+            req.body[a] === req.body[c]
+        ) {
+            // res.send("We have a winner");
+            console.log("We have a winner");
+            return req.body[a];
+        }
+    }
+    return null;
+};
 
 let moves = Array(9).fill(null);
 
-app.post("/api", async (req, res) => {
+app.post("/api", (req, res) => {
     moves = req.body;
-    res.status(200).send(req.body);
-});
 
-app.get("/api/log", (req, res) => {
+    const lines = [
+        [0, 1, 2],
+        [3, 4, 5],
+        [6, 7, 8],
+        [0, 3, 6],
+        [1, 4, 7],
+        [2, 5, 8],
+        [0, 4, 8],
+        [2, 4, 6],
+    ];
+    for (let i = 0; i < lines.length; i++) {
+        const [a, b, c] = lines[i];
+        if (moves[a] && moves[a] === moves[b] && moves[a] === moves[c]) {
+            res.status(200).send({ winner: "X", moves });
+            return;
+        }
+    }
     res.status(200).send(moves);
 });
+
+app.get("/api", (req, res) => {
+    res.status(200).send(moves);
+});
+
+// app.get("/api/log", (req, res) => {
+//     res.status(200).send(moves);
+// });
 
 app.listen(keys.PORT, () => {
     console.log(`Server started on localhost:${keys.PORT}`);
