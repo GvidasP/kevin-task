@@ -12,32 +12,6 @@ app.use(
 
 app.use(express.json());
 
-const checkForWinner = (req, res, next) => {
-    const lines = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6],
-    ];
-    for (let i = 0; i < lines.length; i++) {
-        const [a, b, c] = lines[i];
-        if (
-            req.body[a] &&
-            req.body[a] === req.body[b] &&
-            req.body[a] === req.body[c]
-        ) {
-            // res.send("We have a winner");
-            console.log("We have a winner");
-            return req.body[a];
-        }
-    }
-    return null;
-};
-
 let moves = Array(9).fill(null);
 
 app.post("/api", (req, res) => {
@@ -67,9 +41,10 @@ app.get("/api", (req, res) => {
     res.status(200).send(moves);
 });
 
-// app.get("/api/log", (req, res) => {
-//     res.status(200).send(moves);
-// });
+app.delete("/api", (req, res) => {
+    moves = Array(9).fill(null);
+    res.status(200);
+});
 
 app.listen(keys.PORT, () => {
     console.log(`Server started on localhost:${keys.PORT}`);
