@@ -27,6 +27,7 @@ const Board = () => {
         const board = [...squares];
 
         if (board[index]) return;
+        if (winner) return;
 
         board[index] = nextIsX ? "X" : "O";
 

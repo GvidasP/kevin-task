@@ -2,6 +2,9 @@ const express = require("express");
 const cors = require("cors");
 
 const keys = require("./config/keys");
+require("./database");
+
+const Moves = require("./models/moves");
 
 const app = express();
 app.use(
@@ -30,7 +33,11 @@ app.post("/api", (req, res) => {
     for (let i = 0; i < lines.length; i++) {
         const [a, b, c] = lines[i];
         if (moves[a] && moves[a] === moves[b] && moves[a] === moves[c]) {
-            res.status(200).send({ winner: "X", moves });
+            new Moves({
+                moves,
+                winner: moves[a],
+            }).save();
+            res.status(200).send({ winner: moves[a], moves });
             return;
         }
     }
