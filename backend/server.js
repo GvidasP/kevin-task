@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const path = require("path");
 
 const keys = require("./config/keys");
 require("./database");
@@ -37,20 +38,30 @@ app.post("/api", (req, res) => {
                 moves,
                 winner: moves[a],
             }).save();
-            res.status(200).send({ winner: moves[a], moves });
+            res.status(200).json({ winner: moves[a], moves });
             return;
         }
     }
-    res.status(200).send(moves);
+    if (!moves.includes(null)) {
+        console.log({ winner: "tie", moves });
+        res.status(200).json({ winner: "tie", moves });
+        return;
+    }
+    res.status(200).json(moves);
 });
 
 app.get("/api", (req, res) => {
-    res.status(200).send(moves);
+    res.status(200).json(moves);
 });
 
 app.delete("/api", (req, res) => {
     moves = Array(9).fill(null);
     res.status(200);
+});
+
+app.use(express.static(path.join(__dirname, "../backend/client")));
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../backend/client"));
 });
 
 app.listen(keys.PORT, () => {

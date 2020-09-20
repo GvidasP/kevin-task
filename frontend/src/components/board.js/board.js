@@ -34,7 +34,9 @@ const Board = () => {
         axios
             .post(API_KEY, board)
             .then((res) => {
-                setWinner(res.data.winner);
+                if (res.data.winner) {
+                    setWinner(res.data.winner);
+                }
             })
             .catch((err) => console.log(err));
 
@@ -53,6 +55,12 @@ const Board = () => {
         setNextIsX(true);
     };
 
+    const renderResetGame = () => {
+        if (winner === "tie" || winner) {
+            return <ResetGameButton handleResetGame={handleResetGame} />;
+        }
+    };
+
     return (
         <React.Fragment>
             <div className="board">
@@ -69,8 +77,8 @@ const Board = () => {
             </div>
             {renderTurn()}
             {winner && <h3>Winner is {winner}</h3>}
+            {renderResetGame()}
             <GameLog squares={squares} />
-            {winner && <ResetGameButton handleResetGame={handleResetGame} />}
         </React.Fragment>
     );
 };
